@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Planner</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <h1>Ola Finance</h1>
+        <nav class="header-nav">
+            <a href="#" onclick="scrollToSection('home')">Home</a>
+            <a href="#" onclick="scrollToSection('about')">About</a>
+            <a href="#" onclick="scrollToSection('contact')">Contact</a>
+            <a href="#" onclick="scrollToSection('study')">Study Resources</a>
+            <div class="nav-item">
+                <a href="#" onclick="toggleSubMenu(event)">Calculators</a>
+                <div class="submenu">
+                    <a href="#" onclick="scrollToSection('sip')">SIP Calculator</a>
+                    <a href="#" onclick="scrollToSection('lumpsum')">Lumpsum Calculator</a>
+                    <a href="#" onclick="scrollToSection('comparison')">Comparison</a>
+                    <a href="#" onclick="scrollToSection('stock')">Stock Valuation</a>
+                </div>
+            </div>
+            <a href="#" onclick="scrollToSection('help')">Help</a>
+        </nav>
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="#" onclick="scrollToSection('home')">Home</a>
+            <a href="#" onclick="scrollToSection('about')">About</a>
+            <a href="#" onclick="scrollToSection('contact')">Contact</a>
+            <a href="#" onclick="scrollToSection('study')">Study Resources</a>
+            <div class="nav-item">
+                <a href="#" onclick="toggleSubMenu(event)">Calculators</a>
+                <div class="submenu">
+                    <a href="#" onclick="scrollToSection('sip')">SIP Calculator</a>
+                    <a href="#" onclick="scrollToSection('lumpsum')">Lumpsum Calculator</a>
+                    <a href="#" onclick="scrollToSection('comparison')">Comparison</a>
+                    <a href="#" onclick="scrollToSection('stock')">Stock Valuation</a>
+                </div>
+            </div>
+            <a href="#" onclick="scrollToSection('help')">Help</a>
+        </nav>
+    </header>
+    <br>
+    <p class="risk-disclaimer" role="alert">
+        <strong>Risk Warning:</strong> Investments in mutual funds and stocks are subject to market risks. Past performance is not indicative of future results. Please consult a financial advisor before investing.
+    </p>
+
+    <div class="container">
+        <div id="home">
+            <div class="section" id="study" role="region" aria-labelledby="study-heading">
+                <h2 id="study-heading">Study Resources</h2>
+                <div class="button-group">
+                    <button onclick="showPDF('pdf1Preview')">Preview SEBI Financial Booklet</button>
+                    <button onclick="showPDF('pdf2Preview')">Preview SEBI Investor Booklet</button>
+                </div>
+                <div class="pdf-preview" id="pdf1Preview">
+                    <h3>Preview</h3>
+                    <embed src="img/SEBI_Financial_Education_Booklet_.pdf" type="application/pdf" width="100%" height="600px" aria-label="Study PDF 1 preview">
+                </div>
+                <div class="pdf-preview" id="pdf2Preview">
+                    <h3>Preview</h3>
+                    <embed src="img/SEBI_Investor_Certification_Examination_Securities_Market_Booklet_.pdf" type="application/pdf" width="100%" height="600px" aria-label="Study PDF 2 preview">
+                </div>
+            </div>
+
+            <div class="section" id="portfolio" role="region" aria-labelledby="portfolio-heading">
+                <h2 id="portfolio-heading">Portfolio Diversification</h2>
+                <p>Select your risk tolerance to see suggested portfolio allocations.</p>
+                <div class="input-group">
+                    <label for="riskTolerance">Risk Tolerance:</label>
+                    <select id="riskTolerance" oninput="validateInput(this); calculatePortfolio();" aria-describedby="riskTolerance-error">
+                        <option value="">Select</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <p id="riskTolerance-error" class="error"></p>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculatePortfolio()">Get Allocation</button>
+                    <button onclick="resetPortfolioInputs()">Reset</button>
+                </div>
+                <div id="portfolioResult" class="result" role="region" aria-live="polite">
+                    <p>Please select risk tolerance to see allocation.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="portfolioChart" class="chart" role="img" aria-label="Portfolio allocation chart"></canvas>
+                </div>
+            </div>
+
+            <div class="section" id="sip" role="region" aria-labelledby="sip-heading">
+                <h2 id="sip-heading">Step-Up SIP Calculator</h2>
+                <div class="input-group">
+                    <label for="initial">Initial Monthly Investment (₹):</label>
+                    <input type="number" id="initial" placeholder="Enter amount" min="0" step="100" oninput="validateInput(this); calculateSIP();" aria-describedby="initial-error">
+                    <p id="initial-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="stepUp">Annual Step-Up (%):</label>
+                    <input type="number" id="stepUp" placeholder="Enter step-up" min="0" max="100" step="1" oninput="validateInput(this); calculateSIP();" aria-describedby="stepUp-error">
+                    <p id="stepUp-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="years">Tenure (Years):</label>
+                    <input type="number" id="years" placeholder="Enter years" min="0" step="1" oninput="validateInput(this); calculateSIP();" aria-describedby="years-error">
+                    <p id="years-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="rate">Expected Annual Return (%):</label>
+                    <input type="number" id="rate" placeholder="Enter rate" min="0" max="100" step="0.1" oninput="validateInput(this); calculateSIP();" aria-describedby="rate-error">
+                    <p id="rate-error" class="error"></p>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateSIP()">Calculate SIP</button>
+                    <button onclick="exportSIPToCSV()">Export to CSV</button>
+                    <button onclick="resetInputs('sip')">Reset</button>
+                </div>
+                <div id="sipResult" class="result" role="region" aria-live="polite">
+                    <p>Please enter valid inputs to see results.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="sipChart" class="chart" role="img" aria-label="SIP growth chart"></canvas>
+                </div>
+            </div>
+
+            <div class="section" id="lumpsum" role="region" aria-labelledby="lumpsum-heading">
+                <h2 id="lumpsum-heading">Lumpsum Investment Calculator</h2>
+                <div class="input-group">
+                    <label for="lumpsumAmount">Investment Amount (₹):</label>
+                    <input type="number" id="lumpsumAmount" placeholder="Enter amount" min="0" step="1000" oninput="validateInput(this); calculateLumpsum();" aria-describedby="lumpsumAmount-error">
+                    <p id="lumpsumAmount-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="lumpsumYears">Tenure (Years):</label>
+                    <input type="number" id="lumpsumYears" placeholder="Enter years" min="0" step="1" oninput="validateInput(this); calculateLumpsum();" aria-describedby="lumpsumYears-error">
+                    <p id="lumpsumYears-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="lumpsumRate">Expected Annual Return (%):</label>
+                    <input type="number" id="lumpsumRate" placeholder="Enter rate" min="0" max="100" step="0.1" oninput="validateInput(this); calculateLumpsum();" aria-describedby="lumpsumRate-error">
+                    <p id="lumpsumRate-error" class="error"></p>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateLumpsum()">Calculate</button>
+                    <button onclick="exportLumpsumToCSV()">Export to CSV</button>
+                    <button onclick="resetInputs('lumpsum')">Reset</button>
+                </div>
+                <div id="lumpsumResult" class="result" role="region" aria-live="polite">
+                    <p>Please enter valid inputs to see results.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="lumpsumChart" class="chart" role="img" aria-label="Lumpsum growth chart"></canvas>
+                </div>
+            </div>
+
+            <div class="section" id="comparison" role="region" aria-labelledby="comparison-heading">
+                <h2 id="comparison-heading">SIP vs Lumpsum Comparison</h2>
+                <div class="input-group">
+                    <label for="compareYears">Tenure (Years):</label>
+                    <input type="number" id="compareYears" placeholder="Enter years" min="0" step="1" oninput="validateInput(this); calculateComparison();" aria-describedby="compareYears-error">
+                    <p id="compareYears-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="compareRate">Expected Annual Return (%):</label>
+                    <input type="number" id="compareRate" placeholder="Enter rate" min="0" max="100" step="0.1" oninput="validateInput(this); calculateComparison();" aria-describedby="compareRate-error">
+                    <p id="compareRate-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="compareSIPInitial">SIP Monthly Investment (₹):</label>
+                    <input type="number" id="compareSIPInitial" placeholder="Enter amount" min="0" step="100" oninput="validateInput(this); calculateComparison();" aria-describedby="compareSIPInitial-error">
+                    <p id="compareSIPInitial-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="compareLumpsumAmount">Lumpsum Investment (₹):</label>
+                    <input type="number" id="compareLumpsumAmount" placeholder="Enter amount" min="0" step="1000" oninput="validateInput(this); calculateComparison();" aria-describedby="compareLumpsumAmount-error">
+                    <p id="compareLumpsumAmount-error" class="error"></p>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateComparison()">Compare</button>
+                    <button onclick="resetInputs('comparison')">Reset</button>
+                </div>
+                <div id="comparisonResult" class="result" role="region" aria-live="polite">
+                    <p>Please enter valid inputs to see comparison.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="comparisonChart" class="chart" role="img" aria-label="SIP vs Lumpsum comparison chart"></canvas>
+                </div>
+            </div>
+
+            <div class="section" id="stock" role="region" aria-labelledby="stock-heading">
+                <h2 id="stock-heading">Stock Price Valuation</h2>
+                <div class="input-group">
+                    <label for="stockPrice">Stock Price (₹):</label>
+                    <input type="number" id="stockPrice" placeholder="Enter stock price" min="0" step="0.01" oninput="validateInput(this); calculatePE();" aria-describedby="stockPrice-error">
+                    <p id="stockPrice-error" class="error"></p>
+                </div>
+                <div class="input-group">
+                    <label for="eps">Earnings Per Share (EPS, ₹):</label>
+                    <input type="number" id="eps" placeholder="Enter EPS" min="0" step="0.01" oninput="validateInput(this); calculatePE();" aria-describedby="eps-error">
+                    <p id="eps-error" class="error"></p>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculatePE()">Calculate P/E Ratio</button>
+                    <button onclick="resetInputs('stock')">Reset</button>
+                </div>
+                <div id="peResult" class="result" role="region" aria-live="polite"></div>
+                <p><em>Note: More valuation tools (e.g., DCF, Dividend Discount) coming soon!</em></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="contact-section">
+            <h3>Contact Me</h3>
+            <p>Name: Dinesh Ola</p>
+            <p>Email: dineshola@gmail.com</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" onclick="backToTop()" aria-label="Back to Top">↑</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
